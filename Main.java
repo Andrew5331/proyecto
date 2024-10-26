@@ -18,7 +18,7 @@ public class Main {
         Object [] membresias = {"1] Gold.", "2] Silver.","3] Bronze"};
 
         while(active){
-            choice = JOptionPane.showOptionDialog(frame, "¿Qué desea hacer?", "Seleccione una opción", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, mainMenu, mainMenu);
+            choice = JOptionPane.showOptionDialog(frame, "Bienvenido a la tienda de videojuegos de Ken \n¿Qué desea hacer?", "Seleccione una opción", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, mainMenu, mainMenu);
             switch (choice){
                 case 0:
                     if(intentos == 0 ){

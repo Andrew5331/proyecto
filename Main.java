@@ -69,7 +69,7 @@ public class Main {
                     while (menuActive){
                         choice = JOptionPane.showOptionDialog(null, "¿Qué desea hacer?", "Seleccione una opción", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, menuMembresia, menuMembresia);
                         switch (choice){
-                            //Estoy cansado jefe un pull request y lo termino el domingo
+                            //Estoy cansado jefe un pull request y lo termino el domingo---- XDDDDDDDD
                             
                         }
                     }

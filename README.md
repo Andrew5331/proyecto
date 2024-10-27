@@ -42,6 +42,8 @@ Membresías:
   * Gold
   * Silver
   * Bronze
+
+    
 Descuentos:
   * Descuento por ser estudiante: Si estás matriculado/a en una institución educativa, recibes un 5% de descuento en todas tus compras.
   * Descuentos por membresía activa:

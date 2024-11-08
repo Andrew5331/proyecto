@@ -1,0 +1,321 @@
+// Aqui se encuentra el codigo de prueba que estado optimazando las tre sultimas semanas, tienes unos cuantos errorres y le faltan algunas cosas pero en su totalidad ya casi esta completo, lo hice con un profe del colegio y pues yo
+//Este codigo pueden probarlo en su propio java y perdon la demora, ademas de eso tienes ciertas modificaciones y demas pero nada del otro mundo
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+
+public class TiendaVideojuegosKen {
+    private static HashMap<String, Juego> inventario = new HashMap<>();
+    private static HashMap<String, Cliente> clientes = new HashMap<>();
+    private static ArrayList<Factura> facturas = new ArrayList<>();
+    private static Scanner scanner = new Scanner(System.in);
+    private static final String CONTRASENA_VENDEDOR = "BARBIE";
+    
+    public static void main(String[] args) {
+        inicializarInventario();
+        mostrarMenuPrincipal();
+    }
+    
+    private static void inicializarInventario() {
+        inventario.put("GTA", new Juego("GTA", 120000, 10, 18));
+        inventario.put("FIFA", new Juego("FIFA", 180000, 1, 10));
+        inventario.put("Minecraft", new Juego("Minecraft", 50000, 10, 0));
+        inventario.put("Resident", new Juego("Resident", 110000, 0, 10));
+    }
+    
+    private static void mostrarMenuPrincipal() {
+        int opcion;
+        do {
+            System.out.println("\nTienda de Videojuegos de Ken");
+            System.out.println("1. Ingresar como vendedor");
+            System.out.println("2. Comprar Membresía");
+            System.out.println("3. Consultar Fecha");
+            System.out.println("4. Salir");
+            System.out.print("Seleccione una opción: ");
+            opcion = scanner.nextInt();
+            scanner.nextLine(); 
+
+            switch (opcion) {
+                case 1 -> ingresarComoVendedor();
+                case 2 -> menuMembresia();
+                case 3 -> consultarFecha();
+                case 4 -> System.out.println("Gracias por visitar la Tienda de Videojuegos de Ken.");
+                default -> System.out.println("Opción no válida, por favor intente de nuevo.");
+            }
+        } while (opcion != 4);
+    }
+
+    private static void ingresarComoVendedor() {
+        int intentos = 0;
+        while (intentos < 3) {
+            System.out.print("Ingrese la contraseña: ");
+            String contrasena = scanner.nextLine();
+            if (contrasena.equals(CONTRASENA_VENDEDOR)) {
+                menuVendedor();
+                return;
+            } else {
+                intentos++;
+                System.out.println("Contraseña incorrecta. Intentos restantes: " + (3 - intentos));
+            }
+        }
+        System.out.println("Acceso bloqueado. Demasiados intentos fallidos.");
+    }
+
+    private static void menuVendedor() {
+        int opcion;
+        do {
+            System.out.println("\nMenú de Vendedor");
+            System.out.println("1.1 Consultar Juego");
+            System.out.println("1.2 Realizar Venta");
+            System.out.println("1.3 Generar Factura");
+            System.out.println("1.4 Cargar/Actualizar Juego");
+            System.out.println("1.5 Cargar Cliente");
+            System.out.println("1.6 Consultar Cliente");
+            System.out.println("1.7 Volver Atrás");
+            System.out.print("Seleccione una opción: ");
+            opcion = scanner.nextInt();
+            scanner.nextLine(); // Limpiar el buffer
+
+            switch (opcion) {
+                case 11 -> consultarJuego();
+                case 12 -> realizarVenta();
+                case 13 -> generarFactura();
+                case 14 -> cargarActualizarJuego();
+                case 15 -> cargarCliente();
+                case 16 -> consultarCliente();
+                case 17 -> System.out.println("Saliendo del menú de vendedor...");
+                default -> System.out.println("Opción no válida, por favor intente de nuevo.");
+            }
+        } while (opcion != 17);
+    }
+
+    private static void consultarJuego() {
+        System.out.print("Ingrese el nombre del juego: ");
+        String nombreJuego = scanner.nextLine();
+        if (inventario.containsKey(nombreJuego)) {
+            Juego juego = inventario.get(nombreJuego);
+            System.out.println(juego);
+        } else {
+            System.out.println("El juego no está disponible en el inventario.");
+        }
+    }
+
+    private static void realizarVenta() {
+        System.out.print("Ingrese la cédula del cliente: ");
+        String cedula = scanner.nextLine();
+        Cliente cliente = clientes.getOrDefault(cedula, null);
+        if (cliente == null) {
+            System.out.println("Cliente no encontrado, registrando nuevo cliente.");
+            cliente = cargarCliente();
+        }
+
+        System.out.print("Ingrese el nombre del juego: ");
+        String nombreJuego = scanner.nextLine();
+        if (!inventario.containsKey(nombreJuego)) {
+            System.out.println("El juego no existe en el inventario.");
+            return;
+        }
+
+        Juego juego = inventario.get(nombreJuego);
+        if (juego.getCantidad() > 0) {
+            juego.setCantidad(juego.getCantidad() - 1);
+            int total = juego.getPrecio();
+            System.out.println("Venta realizada exitosamente. Total: $" + total);
+            facturas.add(new Factura(cliente, juego));
+        } else {
+            System.out.println("El juego no tiene stock disponible.");
+        }
+    }
+
+    private static void generarFactura() {
+        System.out.print("Ingrese el ID de la factura: ");
+        int id = scanner.nextInt();
+        scanner.nextLine(); 
+        if (id >= 0 && id < facturas.size()) {
+            System.out.println(facturas.get(id));
+        } else {
+            System.out.println("Factura no encontrada.");
+        }
+    }
+
+    private static void cargarActualizarJuego() {
+        System.out.print("Ingrese el nombre del juego: ");
+        String nombreJuego = scanner.nextLine();
+        System.out.print("Ingrese el precio: ");
+        int precio = scanner.nextInt();
+        System.out.print("Ingrese la cantidad: ");
+        int cantidad = scanner.nextInt();
+        System.out.print("Ingrese la edad mínima requerida: ");
+        int edadMinima = scanner.nextInt();
+        scanner.nextLine(); 
+
+        inventario.put(nombreJuego, new Juego(nombreJuego, precio, cantidad, edadMinima));
+        System.out.println("Juego cargado/actualizado exitosamente.");
+    }
+
+    private static Cliente cargarCliente() {
+        System.out.print("Ingrese el nombre del cliente: ");
+        String nombre = scanner.nextLine();
+        System.out.print("Ingrese la cédula del cliente: ");
+        String cedula = scanner.nextLine();
+        Cliente cliente = new Cliente(nombre, cedula);
+        clientes.put(cedula, cliente);
+        System.out.println("Cliente cargado exitosamente.");
+        return cliente;
+    }
+
+    private static void consultarCliente() {
+        System.out.print("Ingrese la cédula o nombre del cliente: ");
+        String input = scanner.nextLine();
+        if (clientes.containsKey(input)) {
+            System.out.println(clientes.get(input));
+        } else {
+            clientes.values().stream()
+                    .filter(cliente -> cliente.getNombre().contains(input))
+                    .forEach(System.out::println);
+        }
+    }
+
+    private static void menuMembresia() {
+        int opcion;
+        do {
+            System.out.println("\nMenú de Membresía");
+            System.out.println("2.1 Seleccionar Membresía");
+            System.out.println("2.2 Consultar Beneficios");
+            System.out.println("2.3 Procesar Pago");
+            System.out.println("2.4 Volver Atrás");
+            System.out.print("Seleccione una opción: ");
+            opcion = scanner.nextInt();
+            scanner.nextLine(); 
+
+            switch (opcion) {
+                case 21 -> seleccionarMembresia();
+                case 22 -> consultarBeneficios();
+                case 23 -> procesarPago();
+                case 24 -> System.out.println("Saliendo del menú de membresía...");
+                default -> System.out.println("Opción no válida, por favor intente de nuevo.");
+            }
+        } while (opcion != 24);
+    }
+
+    private static void seleccionarMembresia() {
+        System.out.println("1. Membresía Gold - $140,000 (10% descuento)");
+        System.out.println("2. Membresía Silver - $100,000 (5% descuento)");
+        System.out.println("3. Membresía Bronze - $30,000 (3% descuento)");
+        System.out.print("Seleccione una membresía: ");
+        int seleccion = scanner.nextInt();
+        
+        // Aquí se agregarían los detalles para guardar la membresía seleccionada.
+        System.out.println("Membresía seleccionada exitosamente.");
+    }
+
+    private static void consultarBeneficios() {
+        System.out.println("Beneficios de las Membresías:");
+        System.out.println("Gold: 10% de descuento en compras, acceso a promociones exclusivas.");
+        System.out.println("Silver: 5% de descuento en compras.");
+        System.out.println("Bronze: 3% de descuento en compras.");
+        // Aquí se pueden detallar más los beneficios.
+    }
+
+    private static void procesarPago() {
+        System.out.print("Ingrese la cédula del cliente para procesar el pago: ");
+        String cedula = scanner.nextLine();
+        Cliente cliente = clientes.get(cedula);
+        if (cliente == null) {
+            System.out.println("Cliente no encontrado.");
+            return;
+        }
+        System.out.println("Procesando pago...");
+        // Detalles para procesar el pago y actualizar el cliente.
+    }
+
+    private static void consultarFecha() {
+        System.out.println("La fecha de hoy es: " + java.time.LocalDate.now());
+    }
+}
+
+// Clases auxiliares para Cliente, Juego y Factura
+class Cliente {
+    private String nombre;
+    private String cedula;
+
+    public Cliente(String nombre, String cedula) {
+        this.nombre = nombre;
+        this.cedula = cedula;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getCedula() {
+        return cedula;
+    }
+
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "nombre='" + nombre + '\'' +
+                ", cedula='" + cedula + '\'' +
+                '}';
+    }
+}
+
+class Juego {
+    private String nombre;
+    private int precio;
+    private int cantidad;
+    private int edadMinima;
+
+    public Juego(String nombre, int precio, int cantidad, int edadMinima) {
+        this.nombre = nombre;
+        this.precio = precio;
+        this.cantidad = cantidad;
+        this.edadMinima = edadMinima;
+    }
+
+    public int getPrecio() {
+        return precio;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    @Override
+    public String toString() {
+        return "Juego{" +
+                "nombre='" + nombre + '\'' +
+                ", precio=" + precio +
+                ", cantidad=" + cantidad +
+                ", edadMinima=" + edadMinima +
+                '}';
+    }
+}
+
+class Factura {
+    private static int contador = 0;
+    private int id;
+    private Cliente cliente;
+    private Juego juego;
+
+    public Factura(Cliente cliente, Juego juego) {
+        this.id = contador++;
+        this.cliente = cliente;
+        this.juego = juego;
+    }
+
+    @Override
+    public String toString() {
+        return "Factura{" +
+                "id=" + id +
+                ", cliente=" + cliente +
+                ", juego=" + juego +
+                '}';
+    }
+}

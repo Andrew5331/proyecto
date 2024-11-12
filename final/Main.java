@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.io.ObjectStreamException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ public class Main {
     private static HashMap <String, Cliente> clientes = new HashMap<String, Cliente>();
     private static HashMap<String, Juego> inventario = new HashMap<String, Juego>();
     private static HashMap <Integer, Venta> facturas = new HashMap<Integer, Venta>();
+    private static ArrayList<Membresia> membresias = new ArrayList<Membresia>();
 
     //Crear juegos
     private static void inicializarInventario() {
@@ -24,11 +26,21 @@ public class Main {
         inventario.put("resident", new Juego("Resident", 110000, 0, 10));
     }
 
+    //Crear membresias
+    private static void setMembresias(){
+        membresias.add(new Membresia("gold", 140000, new String[]{}));
+        membresias.add(new Membresia("silver", 100000, new String[] {}));
+        membresias.add(new Membresia("bronze", 30000, new String[]{"- 3% en compras de videojuegos", "- Acumulable con descuento por estudiante (- 5%)", "- Acumulable con descuento por género (-10%)", "- Acumulable menor de edad","- Acumulable por edad (18-25) y estudiante (- 80%)"}));
+
+    }
+
     //Función main
     public static void main(String[] args) {
+        setMembresias();
         inicializarInventario();
         //Crear int choice para almacenar la opción del menú elegida por el usuario
         int choice;
+        Membresia membership = null;
         //boolean para mantenerse dentro del menú 1 o 2
         boolean menuActive;
         //boolean para entrar y permanecer en el menú principal
@@ -37,7 +49,7 @@ public class Main {
         Object [] mainMenu = {"1] Entrar como vendedor." , "2] Comprar membresía.", "3] Consultar fecha.", "4] Salir."};
         Object [] menuVendedor = {"1] Consultar juego.", "2] Realizar venta", "3] Generar factura", "4] Cargar/Actualizar juego", "5] Cargar cliente", "6] Consultar cliente", "7] Volver atrás"};
         Object [] menuMembresia = {"1] Seleccionar membresía", "2] Consultar membresía", "3] Procesar pago", "4] Volver atrás"};
-        Object [] membresias = {"1] Gold.", "2] Silver.","3] Bronze"};
+
         //Menú principal
         while(active){
             //Choice almacena el índice el al opción seleccionada del objeto mainMenu
@@ -86,22 +98,29 @@ public class Main {
                     //Caso 1: Menú membresías. No requiere inicio de sesión
                     menuActive = true;
                     while (menuActive){
+
                         choice = JOptionPane.showOptionDialog(null, "¿Qué desea hacer?", "Seleccione una opción", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, menuMembresia, menuMembresia);
                         switch (choice){
                             //Llama a las funciones correspondientes :)
-                            case 0:
-                                JOptionPane.showMessageDialog(null, "Ud quiere seleccionar su membresía");
-                                break;
-                            case 1:
-                                JOptionPane.showMessageDialog(null, "Ud quiere consultar las membresías");
-                                break;
-                            case 2:
-                                JOptionPane.showMessageDialog(null, "Ud quiere procesar el pago de su membresía");
-                                break;
-                            case 3:
-                                menuActive = false;
-                                break;
+                            case 0 -> {
+                                int num = seleccionarMembresia();
+                               membership = membresias.get(num);
+                            }
+                            case 1 -> consultarMembresias();
+                            case 2 -> {
+                                String id = JOptionPane.showInputDialog(null, "Ingrese su ID", "Seleccionar cliente", JOptionPane.QUESTION_MESSAGE);
+                                if(!clientes.containsKey(id)){
+                                    JOptionPane.showMessageDialog(null, "Usted no está registrado, ingrese como vendedor y regístre su id");
+                                } else{
+                                    try {
+                                        comprarMembresia(membership, clientes.get(id));
+                                    } catch (NullPointerException E){
+                                        JOptionPane.showMessageDialog(null, "Ud no ha seleccionado ninguna membresía");
 
+                                    }
+                                }
+                            }
+                            case 3 -> menuActive = false;
                         }
                     }
                     break;
@@ -211,5 +230,21 @@ public class Main {
         inventario.put(newGame.nombre,newGame);
     }
 
-}
+    public static void consultarMembresias(){
+        Object [] memberships = {"Gold", "Silver","Bronze"};
+        int choice = JOptionPane.showOptionDialog(null, "¿Qué membresía desea consultar?", "Elija una membresía", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, memberships, memberships);
+        Membresia membership = membresias.get(choice);
+        membership.consultarBeneficios();
+    }
 
+    public static int seleccionarMembresia(){
+        Object [] memberships = {"Gold", "Silver","Bronze"};
+        return JOptionPane.showOptionDialog(null, "¿Qué membresía desea seleccionar?", "Elija una membresía", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, memberships, memberships);
+    }
+
+    public static void comprarMembresia (Membresia membresia, Cliente cliente){
+        cliente.tipoMembresia = membresia.tipo;
+        JOptionPane.showMessageDialog(null, "Procesando pago. Presione \"Ok\" para ver su comprobante", "Membresía adquirida", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "");
+    }
+}

@@ -1,22 +1,21 @@
 import javax.swing.*;
-import java.io.ObjectStreamException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
 public class Main {
     //Crear a nivel global el frame, la fecha y los intentos para inciar sesión
-    private static JFrame frame = new JFrame();
-    private static Date date = new Date();
+    private static final JFrame frame = new JFrame();
+    public static Date date = new Date();
     private static int intentos = 3;
     private static int factura_id = 0;
 
 
     //Base de datos
-    private static HashMap <String, Cliente> clientes = new HashMap<String, Cliente>();
-    private static HashMap<String, Juego> inventario = new HashMap<String, Juego>();
-    private static HashMap <Integer, Venta> facturas = new HashMap<Integer, Venta>();
-    private static ArrayList<Membresia> membresias = new ArrayList<Membresia>();
+    private static final HashMap <String, Cliente> clientes = new HashMap<String, Cliente>();
+    private static final HashMap<String, Juego> inventario = new HashMap<String, Juego>();
+    private static final HashMap <Integer, Venta> facturas = new HashMap<Integer, Venta>();
+    private static final ArrayList<Membresia> membresias = new ArrayList<Membresia>();
 
     //Crear juegos
     private static void inicializarInventario() {
@@ -28,14 +27,15 @@ public class Main {
 
     //Crear membresias
     private static void setMembresias(){
-        membresias.add(new Membresia("gold", 140000, new String[]{}));
-        membresias.add(new Membresia("silver", 100000, new String[] {}));
-        membresias.add(new Membresia("bronze", 30000, new String[]{"- 3% en compras de videojuegos", "- Acumulable con descuento por estudiante (- 5%)", "- Acumulable con descuento por género (-10%)", "- Acumulable menor de edad","- Acumulable por edad (18-25) y estudiante (- 80%)"}));
+        membresias.add(new Membresia("gold", 140000, new String[]{"- 10% en compras de videojuegos", "- Acceso a promociones exclusivas", "- Acumulable con descuento de estudiante (-5%)", "- Acumulable con descuento por género", "- Acumulable menor de edad (- 30%)", "- Acumulable estudiante 18-25 años (-60%)", "- Acumulable edad +25 años (- 60%)"}));
+        membresias.add(new Membresia("silver", 100000, new String[] {" - 5% en compras de videojuegos", "- Acumulable descuento estudiante (-5 %)", "- Acumulable descuento género (- 10%)", "- Acumulable menor de edad (- 30%)", "- Acumulable estudiante 18-25 años (- 30%)", "- Acumulable mayor +25 años (30%)"}));
+        membresias.add(new Membresia("bronze", 30000, new String[]{"- 3% en compras de videojuegos", "- Acumulable con descuento por estudiante (- 5%)", "- Acumulable con descuento por género (-10%)", "- Acumulable menor de edad (-30%)","- Acumulable por edad (18-25) y estudiante (- 80%)"}));
 
     }
 
     //Función main
     public static void main(String[] args) {
+
         setMembresias();
         inicializarInventario();
         //Crear int choice para almacenar la opción del menú elegida por el usuario
@@ -52,6 +52,7 @@ public class Main {
 
         //Menú principal
         while(active){
+            date = new Date();
             //Choice almacena el índice el al opción seleccionada del objeto mainMenu
             choice = JOptionPane.showOptionDialog(frame, "¡Bienvenido a la tienda de videojuegos de Ken!\n¿Qué desea hacer?", "Seleccione una opción", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, mainMenu, mainMenu);
             switch (choice){
@@ -78,7 +79,7 @@ public class Main {
                                             Juego game = inventario.get(juego);
                                             game.update();
                                         } else{
-                                            crearJuego();
+                                            crearJuego(juego);
                                         }
                                     }
                                     case 4 -> crearCliente();
@@ -141,26 +142,28 @@ public class Main {
     }
 
     public static void consultarJuego(){
-        String nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del juego que desea consultar", "Consultar juego", JOptionPane.QUESTION_MESSAGE);
+        String nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del juego que desea consultar", "Consultar juego", JOptionPane.QUESTION_MESSAGE).toLowerCase();
         if(inventario.containsKey(nombre.toLowerCase())){
             //crea un objeto juego
             Juego juego = inventario.get(nombre);
             //imprime la información del juego
             juego.printGameInfo();
+        } else {
+            JOptionPane.showMessageDialog(null, "El juego que consultó no está registrado en el inventario");
         }
     }
 
     public static void crearCliente(){
-        JOptionPane.showMessageDialog(null, "Bienvenido a la opción crear cliente. Registre los datos que se le solicitan a continuación");
+        JOptionPane.showMessageDialog(null, "Para realizar ventas se debe registrar el cliente. Ingrese los datos que se le solicitan a continuación", "Registrar cliente", JOptionPane.INFORMATION_MESSAGE);
         String cedula, nombre, membresia;
         boolean mujer, estudiante;
         int edad;
-        cedula = JOptionPane.showInputDialog(null, "Ingrese la cédula: ");
-        nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre: ");
+        cedula = JOptionPane.showInputDialog(null, "Ingrese la cédula: ", "Registro del cliente", JOptionPane.QUESTION_MESSAGE);
+        nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre: ", "Registro del cliente", JOptionPane.QUESTION_MESSAGE);
         //Por defecto, el cliente no tiene ninguna membresía
         //Cuando el cliente adquiere la membresía se actualiza este valor
         membresia = "Ninguna";
-        estudiante = (JOptionPane.showConfirmDialog(null, "Es usted estudiante", "" , JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0);
+        estudiante = (JOptionPane.showConfirmDialog(null, "Es estudiante?", "" , JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0);
         mujer = (JOptionPane.showConfirmDialog(null, "Es usted mujer?", "" , JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null) == 0);
         edad = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese su edad: "));
 
@@ -219,10 +222,9 @@ public class Main {
 
     }
 
-    public static void crearJuego(){
+    public static void crearJuego(String nombre){
         int precio, edadMin, unidades;
-        String nombre;
-        nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del juego").toLowerCase();
+        JOptionPane.showMessageDialog(null, "Ud va a añadir un nuevo juego al inventario");
         precio = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el precio del juego"));
         edadMin = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese la edad mínima"));
         unidades = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese la cantidad ded unidades disponibles"));
@@ -245,6 +247,6 @@ public class Main {
     public static void comprarMembresia (Membresia membresia, Cliente cliente){
         cliente.tipoMembresia = membresia.tipo;
         JOptionPane.showMessageDialog(null, "Procesando pago. Presione \"Ok\" para ver su comprobante", "Membresía adquirida", JOptionPane.INFORMATION_MESSAGE);
-        JOptionPane.showMessageDialog(null, "");
+        JOptionPane.showMessageDialog(null, "ID Cliente: " + cliente.cedula + "\nMembresía adquirida: " + membresia.tipo + "\nCosto: " + membresia.precio , "Comprobante", JOptionPane.INFORMATION_MESSAGE);
     }
 }

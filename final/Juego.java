@@ -25,15 +25,15 @@ public class Juego {
     public void update(){
         JOptionPane.showMessageDialog(frame, ("Usted quiere actualizar el juego " + this.nombre));
         int choice;
-        choice = JOptionPane.showConfirmDialog(null, "Quiere actualizar la cantidad?");
+        choice = JOptionPane.showConfirmDialog(null,  "Quiere actualizar la cantidad?", "Cantidad",JOptionPane.YES_NO_OPTION);
         if (choice == 0) {
             this.unidades += Integer.parseInt(JOptionPane.showInputDialog(null, "Cuántas unidades desea agregar al inventario?"));
         }
-        choice = JOptionPane.showConfirmDialog(null, "Quiere actualizar la edad minima?");
+        choice = JOptionPane.showConfirmDialog(null, "Quiere actualizar la edad minima?", "Edad mínima", JOptionPane.YES_NO_OPTION);
         if (choice == 0) {
             this.edadMin = Integer.parseInt(JOptionPane.showInputDialog(null, "Cuál es la nueva edad mínima?"));
         }
-        choice = JOptionPane.showConfirmDialog(null, "Quiere actualizar el precio?");
+        choice = JOptionPane.showConfirmDialog(null, "Quiere actualizar el precio?", "Precio", JOptionPane.YES_NO_OPTION);
         if (choice == 0) {
             this.precio = Integer.parseInt(JOptionPane.showInputDialog(null, "Cuál es el nuevo precio?"));
         }

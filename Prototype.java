@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.util.Date;
 
-public class Main {
+public class Prototype {
     //Crear a nivel global el frame, la fecha y los intentos para inciar sesión
     public static JFrame frame = new JFrame();
     public static Date date = new Date();

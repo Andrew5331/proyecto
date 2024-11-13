@@ -1,7 +1,7 @@
 import java.util.ArrayList; 
 
 import java.util.Scanner; 
-public class SistemaClientes { 
+public class Sample { 
 
     static ArrayList<Cliente> clientes = new ArrayList<>(); 
 

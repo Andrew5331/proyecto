@@ -1,5 +1,5 @@
 import java.util.Scanner;
-public class Main {
+public class Demo {
   public static void main(String[] args) {
     String NombreBuscado;
     Scanner leer=new Scanner(System.in);

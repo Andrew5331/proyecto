@@ -27,15 +27,27 @@ public class Juego {
         int choice;
         choice = JOptionPane.showConfirmDialog(null,  "Quiere actualizar la cantidad?", "Cantidad",JOptionPane.YES_NO_OPTION);
         if (choice == 0) {
-            this.unidades += Integer.parseInt(JOptionPane.showInputDialog(null, "Cuántas unidades desea agregar al inventario?"));
+            try {
+                this.unidades += Integer.parseInt(JOptionPane.showInputDialog(null, "Cuántas unidades desea agregar al inventario?"));
+            } catch (NumberFormatException e){
+                JOptionPane.showMessageDialog(null, "El valor no corresponde a un número entero, por ende no se actualizará");
+            }
         }
         choice = JOptionPane.showConfirmDialog(null, "Quiere actualizar la edad minima?", "Edad mínima", JOptionPane.YES_NO_OPTION);
         if (choice == 0) {
-            this.edadMin = Integer.parseInt(JOptionPane.showInputDialog(null, "Cuál es la nueva edad mínima?"));
+            try {
+                this.edadMin = Integer.parseInt(JOptionPane.showInputDialog(null, "Cuál es la nueva edad mínima?"));
+            } catch (NumberFormatException e){
+                JOptionPane.showMessageDialog(null, "El valor no corresponde a un número entero, por ende no se actualizará", "Edad mínima", JOptionPane.WARNING_MESSAGE);
+            }
         }
         choice = JOptionPane.showConfirmDialog(null, "Quiere actualizar el precio?", "Precio", JOptionPane.YES_NO_OPTION);
         if (choice == 0) {
-            this.precio = Integer.parseInt(JOptionPane.showInputDialog(null, "Cuál es el nuevo precio?"));
+            try {
+                this.precio = Integer.parseInt(JOptionPane.showInputDialog(null, "Cuál es el nuevo precio?"));
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "El valor ingresado no corresponde a un número entero, por ende no se actualizará");
+            }
         }
 
     }

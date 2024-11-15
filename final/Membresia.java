@@ -19,10 +19,4 @@ public class Membresia {
         JOptionPane.showMessageDialog(null, ("Tipo de membresía: " + tipo + "\nPrecio: " + precio + "\nBeneficios: " + benefits), "Información membresía " + tipo, JOptionPane.INFORMATION_MESSAGE);
     }
 
-    //Sample code
-    public static void main(String [] args){
-        Membresia membershipA = new Membresia("A", 5, new String[]{"ben a", "ben b"});
-        membershipA.consultarBeneficios();
-    }
-
 }

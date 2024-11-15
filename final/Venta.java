@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.util.ArrayList;
 
-
 public class Venta {
     public JFrame frame = new JFrame();
     Cliente cliente;
@@ -17,6 +16,7 @@ public class Venta {
     int edad;
     int precio;
 
+
     ArrayList<String> descuentos = new ArrayList<>();
 
     Venta(Cliente cliente, Juego juego, int cantidad, int id){
@@ -29,6 +29,7 @@ public class Venta {
         this.mujer= cliente.mujer;
         this.edad= cliente.edad;
         this.precio = juego.precio;
+
     }
 
 
@@ -97,9 +98,11 @@ public class Venta {
         }
         total=(precio*cantidad)-((precio*cantidad)*descuento);
 
-        JOptionPane.showMessageDialog(frame, ("Cédula cliente: "+cedulaCliente+ "\nJuego vendido: "+ JuegoVendido+"\n" +
+        JOptionPane.showMessageDialog(frame, ("\nCédula: "+cedulaCliente+ "\nJuego vendido: "+ JuegoVendido+"\n" +
                 "Cantidad: "+cantidad+ "\nSubtotal: "+ precio +"\nPorcentaje total de descuentos: " + descuento*100 + "\nTotal costo: " + total), "Factura No " + ID, JOptionPane.INFORMATION_MESSAGE);
-        showDiscounts();
+	if( descuento > 0){
+	        showDiscounts();
+	}
         frame.dispose();
     }
 
@@ -109,12 +112,5 @@ public class Venta {
             descuentosFormat = descuentosFormat.concat(descuentos.get(i) + "\n");
         }
         JOptionPane.showMessageDialog(null, descuentosFormat, "Sus descuentos provienen de: ", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    public static void main(String[] args){
-        Cliente costumer = new Cliente("Cata", "1010", true, "silver", true, true, 25);
-        Juego cod = new Juego("Call of Duty", 250000, 3, 17);
-        Venta venta = new Venta(costumer, cod, 1, 20 );
-        venta.generarFactura();
     }
 }
